@@ -7,21 +7,13 @@ require 'haml' # template engine
 # sample helloWorld program using DB2 services 
 # v1.0   Felix Fong  27/04/2014   initial release 
 # v1.1   Calvin Bui  28/04/2014   added array of messages, home button on each page and some visual improvement
+# v1.2   Felix Fong  02/05/2015   added auto-detected db2 service availability b4 loading drivers 
+
 
 # Global variables
 BXMsg="Hello World from BlueMix Cloud!"
 servicename = "SQLDB-1.0"
 CurTime=Time.new.usec.to_s
-jsondb_db = JSON.parse(ENV['VCAP_SERVICES'])[servicename]
-credentials = jsondb_db.first["credentials"]
-host = credentials["host"]
-username = credentials["username"]
-password = credentials["password"]
-database = credentials["db"]
-db2_port = credentials["port"]
-tablename = "BLUEMIX.HelloWorldDemo"
-dsn = "DRIVER={IBM DB2 ODBC DRIVER};DATABASE="+database+";HOSTNAME="+host+";PORT="+db2_port.to_s()+";PROTOCOL=TCPIP;UID="+username+";PWD="+password+";"
-conn = IBM_DB.connect(dsn, '', '')
 app_port = ENV['VCAP_APP_PORT']
 parsed = JSON.parse(ENV['VCAP_APPLICATION'])
 app_instance = parsed["instance_index"]+1
@@ -29,31 +21,66 @@ url  = parsed["application_uris"]
 url2 = url.slice!(3..url.length-2)
 messages = ["Welcome to BlueMix Cloud", "BlueMix - the new Platform as a Service Cloud from IBM", "200 BlueMix Days is on", "BlueMix  mixes with DevOps equals dream platform for developers", "Sign up BlueMix today!!!"]
 
+jsondb_db = JSON.parse(ENV['VCAP_SERVICES'])[servicename]
+if jsondb_db.nil?
+   db2_found=0
+else
+  db2_found=1
+  credentials = jsondb_db.first["credentials"]
+  host = credentials["host"]
+  username = credentials["username"]
+  password = credentials["password"]
+  database = credentials["db"]
+  db2_port = credentials["port"]
+  tablename = "BLUEMIX.HelloWorldDemo"
+  dsn = "DRIVER={IBM DB2 ODBC DRIVER};DATABASE="+database+";HOSTNAME="+host+";PORT="+db2_port.to_s()+";PROTOCOL=TCPIP;UID="+username+";PWD="+password+";"
+  conn = IBM_DB.connect(dsn, '', '')
+end 
 
 get '/' do
+  total = String.new
+  if db2_found==0
+
+     total += "
+       <html>
+       <head>
+       <meta http-equiv='refresh' content='30'>
+       <link href='css/bootstrap.css' rel='stylesheet' type='text/css' />
+       </head>
+       <body>
+       <div class='container'>
+       <h1>#{BXMsg} on port #{app_port} running on instance # #{app_instance} </h1>
+       <a href=#{url2}>Refresh page</a> 
+     "
+  end
+
+  if db2_found==1
+   
+  total += "
+     <html>
+     <head>
+     <meta http-equiv='refresh' content='30'>
+     <link href='css/bootstrap.css' rel='stylesheet' type='text/css' />
+     </head>
+     <body>
+     <div class='container'>
+     <h1>#{BXMsg} on port #{app_port} running on instance # #{app_instance} </h1>
+     <a href=#{url2}>Refresh page</a> 
+     <br>
+     <br> 
+     <a href=#{url2}/cr_tables>Create DB2 tables </a>
+     <br>
+     <a href=#{url2}/insert_tables>Insert into tables </a>
+     <br>
+     <a href=#{url2}/show_tables>Display all records </a>
+     <br> 
+     <a href=#{url2}/cleanup_tables>Clean up tables </a>
+     </div>
+     </body>
+     </html> 
   "
-  <html>
-  <head>
-  <meta http-equiv='refresh' content='30'>
-  <link href='css/bootstrap.css' rel='stylesheet' type='text/css' />
-  </head>
-  <body>
-  <div class='container'>
-  <h1>#{BXMsg} on port #{app_port} running on instance # #{app_instance} </h1>
-  <a href=#{url2}>Refresh page</a> 
-  <br>
-  <br> 
-  <a href=#{url2}/cr_tables>Create DB2 tables </a>
-  <br>
-  <a href=#{url2}/insert_tables>Insert into tables </a>
-  <br>
-  <a href=#{url2}/show_tables>Display all records </a>
-  <br> 
-  <a href=#{url2}/cleanup_tables>Clean up tables </a>
-  </div>
-  </body>
-  </html>
-  "
+  end 
+  total
 end 
 
 get '/cr_tables' do 
