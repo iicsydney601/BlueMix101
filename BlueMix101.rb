@@ -7,11 +7,12 @@ require 'haml' # template engine
 # sample helloWorld program using DB2 services 
 # v1.0   Felix Fong  27/04/2014   initial release 
 # v1.1   Calvin Bui  28/04/2014   added array of messages, home button on each page and some visual improvement
-# v1.2   Felix Fong  02/05/2015   added auto-detected db2 service availability b4 loading drivers 
+# v1.2   Felix Fong  02/05/2014   added auto-detected db2 service availability b4 loading drivers 
+# v1.3   Felix Fong  21/07/2014   updated Bluemix name from Bluemix to Bluemix 
 
 
 # Global variables
-BXMsg="Hello World from BlueMix Cloud!"
+BXMsg="Hello World from Bluemix Cloud!"
 servicename = "SQLDB-1.0"
 CurTime=Time.new.usec.to_s
 app_port = ENV['VCAP_APP_PORT']
@@ -19,7 +20,7 @@ parsed = JSON.parse(ENV['VCAP_APPLICATION'])
 app_instance = parsed["instance_index"]+1
 url  = parsed["application_uris"]
 url2 = url.slice!(3..url.length-2)
-messages = ["Welcome to BlueMix Cloud", "BlueMix - the new Platform as a Service Cloud from IBM", "200 BlueMix Days is on", "BlueMix  mixes with DevOps equals dream platform for developers", "Sign up BlueMix today!!!"]
+messages = ["Welcome to Bluemix Cloud", "Bluemix - the new Platform as a Service Cloud from IBM", "200 Bluemix Days is on", "Bluemix  mixes with DevOps equals dream platform for developers", "Sign up Bluemix today!!!"]
 
 jsondb_db = JSON.parse(ENV['VCAP_SERVICES'])[servicename]
 if jsondb_db.nil?
@@ -32,7 +33,7 @@ else
   password = credentials["password"]
   database = credentials["db"]
   db2_port = credentials["port"]
-  tablename = "BLUEMIX.HelloWorldDemo"
+  tablename = "Bluemix.HelloWorldDemo"
   dsn = "DRIVER={IBM DB2 ODBC DRIVER};DATABASE="+database+";HOSTNAME="+host+";PORT="+db2_port.to_s()+";PROTOCOL=TCPIP;UID="+username+";PWD="+password+";"
   conn = IBM_DB.connect(dsn, '', '')
 end 
