@@ -12,15 +12,15 @@ require 'haml' # template engine
 
 
 # Global variables
-BXMsg="Hello World from Bluemix Cloud!"
-servicename = "SQLDB-1.0"
+BXMsg="Hello World from Bluemix&#153; Cloud!"
+servicename = "sqldb"
 CurTime=Time.new.usec.to_s
 app_port = ENV['VCAP_APP_PORT']
 parsed = JSON.parse(ENV['VCAP_APPLICATION'])
 app_instance = parsed["instance_index"]+1
 url  = parsed["application_uris"]
 url2 = url.slice!(3..url.length-2)
-messages = ["Welcome to Bluemix Cloud", "Bluemix - the new Platform as a Service Cloud from IBM", "200 Bluemix Days is on", "Bluemix  mixes with DevOps equals dream platform for developers", "Sign up Bluemix today!!!"]
+messages = ["Welcome to Bluemix Cloud", "Bluemix - the new Platform as a Service Cloud from IBM", "200 Bluemix Days is on", "Bluemix  mixes with IBM DevOps equals dream platform for developers", "Sign up Bluemix today!!!"]
 
 jsondb_db = JSON.parse(ENV['VCAP_SERVICES'])[servicename]
 if jsondb_db.nil?
@@ -50,7 +50,7 @@ get '/' do
        </head>
        <body>
        <div class='container'>
-       <h1>#{BXMsg} on port #{app_port} running on instance # #{app_instance} </h1>
+       <h2>#{BXMsg} on port #{app_port} running on instance # #{app_instance} </h1>
        <a href=#{url2}>Refresh page</a> 
      "
   end
