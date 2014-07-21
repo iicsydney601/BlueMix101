@@ -5,12 +5,8 @@ applications:
 - disk: 512M
   path: .
   mem: 256M
- 
   instances: 1
-
+  domain: mybluemix.net
+  buildpack: https://github.com/ibmdb/db2rubybuildpack
   
-  domain: ng.bluemix.net
   
-env:
-  IBM_DB_HOME: /tmp/staged/app/clidriver
-  LD_LIBRARY_PATH: $HOME/clidriver/lib:$LD_LIBRARY_PATH  
