@@ -1,2 +1,2 @@
-require './Bluemix101'
+require './BlueMix101'
 run Sinatra::Application
