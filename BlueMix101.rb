@@ -8,8 +8,7 @@ require 'haml' # template engine
 # v1.0   Felix Fong  27/04/2014   initial release 
 # v1.1   Calvin Bui  28/04/2014   added array of messages, home button on each page and some visual improvement
 # v1.2   Felix Fong  02/05/2014   added auto-detected db2 service availability b4 loading drivers 
-# v1.3   Felix Fong  21/07/2014   updated Bluemix name from Bluemix to Bluemix 
-# v1.4   Felix Fong  01/08/2014   Change the source code name from BlueMix.rb Bluemix.rb
+# v1.3   Felix Fong  21/07/2014   updated to use custom ruby-db2 buildpack. Updated to use GA service name 
 
 # Global variables
 BXMsg="Hello World from Bluemix&#153; Cloud!"
